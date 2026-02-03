@@ -1,0 +1,148 @@
+.container {
+  min-height: 100vh;
+  background: #0a0e27;
+  padding: 20px;
+}
+
+.header {
+  max-width: 1400px;
+  margin: 0 auto 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.backButton {
+  background: #252b48;
+  border: 1px solid #3f3f46;
+  color: #e4e4e7;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: #1a1f3a;
+  border-color: #6366f1;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.turn {
+  font-size: 1.1rem;
+  color: #a1a1aa;
+}
+
+.turnIndicator {
+  color: #e4e4e7;
+  font-weight: 600;
+}
+
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 24px;
+  align-items: start;
+}
+
+.gameArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.gameOver {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  animation: slideIn 0.4s ease;
+}
+
+.gameOver h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.gameOver p {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 4px;
+}
+
+.winner {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white !important;
+  margin-top: 8px;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1024px) {
+  .main {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 12px;
+  }
+
+  .header {
+    margin-bottom: 16px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .turn {
+    font-size: 1rem;
+  }
+
+  .main {
+    gap: 16px;
+  }
+
+  .gameArea {
+    padding: 0;
+  }
+}

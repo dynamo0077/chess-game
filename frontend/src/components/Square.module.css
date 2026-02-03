@@ -1,0 +1,57 @@
+.square {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease;
+}
+
+.light {
+  background-color: #f0d9b5;
+}
+
+.dark {
+  background-color: #b58863;
+}
+
+.selected {
+  background-color: #646cff !important;
+}
+
+.check {
+  background-color: #ff5555 !important;
+}
+
+.square:hover {
+  filter: brightness(0.95);
+}
+
+.piece {
+  font-size: clamp(2rem, 8vw, 4rem);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.legalMove {
+  position: absolute;
+  width: 30%;
+  height: 30%;
+  background-color: rgba(32, 223, 127, 0.35);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.square:has(.piece) .legalMove {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  opacity: 0.3;
+}
+
+@media (max-width: 640px) {
+  .piece {
+    font-size: 2.5rem;
+  }
+}
