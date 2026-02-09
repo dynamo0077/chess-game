@@ -81,6 +81,7 @@ export class ChessEngine {
   }
 
   getPieceAt(square: string): { type: string; color: 'w' | 'b' } | null {
-    return this.chess.get(square as any);
+    const piece = this.chess.get(square as any);
+    return piece || null;
   }
 }

@@ -884,4 +884,5 @@ You now have a **complete, production-ready chess game** with:
 
 ---
 
-*Built with ❤️ using Next.js, Socket.IO, and chess.js*
+*Built with ❤️ using Next.js, Socket.IO, and chess.js*#   C h e s s   G a m e   B a c k e n d  
+ 

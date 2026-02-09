@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { ChessPiece } from './pieces/ChessPiece';
+import { PieceType } from '@/lib/skins';
 import styles from './Square.module.css';
 
 interface SquareProps {
@@ -22,14 +24,6 @@ export const Square: React.FC<SquareProps> = ({
   isCheck,
   onClick
 }) => {
-  const getPieceSymbol = (type: string, color: 'w' | 'b'): string => {
-    const pieces: Record<string, string> = {
-      'w_k': '♔', 'w_q': '♕', 'w_r': '♖', 'w_b': '♗', 'w_n': '♘', 'w_p': '♙',
-      'b_k': '♚', 'b_q': '♛', 'b_r': '♜', 'b_b': '♝', 'b_n': '♞', 'b_p': '♟',
-    };
-    return pieces[`${color}_${type}`] || '';
-  };
-
   const squareClasses = [
     styles.square,
     isLight ? styles.light : styles.dark,
@@ -42,7 +36,10 @@ export const Square: React.FC<SquareProps> = ({
       {isLegalMove && <div className={styles.legalMove} />}
       {piece && (
         <div className={styles.piece}>
-          {getPieceSymbol(piece.type, piece.color)}
+          <ChessPiece
+            type={piece.type as PieceType}
+            color={piece.color}
+          />
         </div>
       )}
     </div>

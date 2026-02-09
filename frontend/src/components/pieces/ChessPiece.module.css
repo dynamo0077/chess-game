@@ -1,0 +1,107 @@
+.piece {
+    display: block;
+    transition: transform 0.15s ease, filter 0.2s ease;
+    will-change: transform, filter;
+}
+
+.animated:hover {
+    transform: scale(1.08);
+}
+
+/* Hover glow effect using CSS variable from component */
+.animated:hover {
+    filter: drop-shadow(0 0 8px var(--glow-color, rgba(255, 255, 255, 0.5)));
+}
+
+/* Skin-specific animations */
+.classic {
+    filter: drop-shadow(0 1px 2px rgba(139, 115, 85, 0.3));
+}
+
+.classic:hover {
+    filter: drop-shadow(0 0 6px rgba(212, 184, 150, 0.7));
+}
+
+.metallic {
+    filter: drop-shadow(0 1px 3px rgba(156, 163, 175, 0.4));
+}
+
+.metallic:hover {
+    filter:
+        drop-shadow(0 0 4px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 12px rgba(200, 200, 200, 0.4));
+}
+
+.fantasy {
+    /* Persistent magical glow */
+    animation: fantasyPulse 2s ease-in-out infinite;
+}
+
+.fantasy:hover {
+    filter:
+        drop-shadow(0 0 10px var(--glow-color)) drop-shadow(0 0 20px var(--glow-color));
+    animation: none;
+}
+
+@keyframes fantasyPulse {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 4px var(--glow-color));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 8px var(--glow-color));
+    }
+}
+
+.minimalist {
+    /* Clean, sharp style */
+    transition: transform 0.1s ease;
+}
+
+.minimalist:hover {
+    filter: drop-shadow(0 0 6px var(--glow-color));
+    transform: scale(1.1);
+}
+
+.vintage {
+    filter: sepia(0.1) drop-shadow(0 1px 2px rgba(146, 64, 14, 0.3));
+}
+
+.vintage:hover {
+    filter:
+        drop-shadow(0 0 6px rgba(251, 191, 36, 0.5)) sepia(0.15);
+}
+
+.cartoon {
+    /* Bouncy playful style */
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cartoon:hover {
+    transform: scale(1.15) rotate(-3deg);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* Move animation class - applied when piece is moving */
+.moving {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Accessibility - reduce motion */
+@media (prefers-reduced-motion: reduce) {
+
+    .piece,
+    .animated,
+    .fantasy {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+    .piece {
+        filter: contrast(1.2);
+    }
+}

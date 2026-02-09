@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import { Square as SquareComponent } from './Square';
+import { ChessPiece } from './pieces/ChessPiece';
 import { ChessEngine } from '@/lib/chess-engine';
+import { PieceType } from '@/lib/skins';
 import styles from './Board.module.css';
 
 interface BoardProps {
@@ -13,9 +15,9 @@ interface BoardProps {
   orientation?: 'white' | 'black';
 }
 
-export const Board: React.FC<BoardProps> = ({ 
-  gameEngine, 
-  onMove, 
+export const Board: React.FC<BoardProps> = ({
+  gameEngine,
+  onMove,
   disabled = false,
   playerColor,
   orientation = 'white'
@@ -26,7 +28,7 @@ export const Board: React.FC<BoardProps> = ({
 
   const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
   const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
-  
+
   const displayFiles = orientation === 'white' ? files : [...files].reverse();
   const displayRanks = orientation === 'white' ? ranks : [...ranks].reverse();
 
@@ -39,19 +41,19 @@ export const Board: React.FC<BoardProps> = ({
     if (selectedSquare) {
       if (legalMoves.includes(square)) {
         const movingPiece = gameEngine.getPieceAt(selectedSquare);
-        
-        if (movingPiece?.type === 'p' && 
-            ((movingPiece.color === 'w' && square[1] === '8') || 
-             (movingPiece.color === 'b' && square[1] === '1'))) {
+
+        if (movingPiece?.type === 'p' &&
+          ((movingPiece.color === 'w' && square[1] === '8') ||
+            (movingPiece.color === 'b' && square[1] === '1'))) {
           setPromotionPending({ from: selectedSquare, to: square });
         } else {
           onMove(selectedSquare, square);
         }
-        
+
         setSelectedSquare(null);
         setLegalMoves([]);
-      } else if (piece && piece.color === gameState.turn && 
-                 (!playerColor || piece.color === playerColor)) {
+      } else if (piece && piece.color === gameState.turn &&
+        (!playerColor || piece.color === playerColor)) {
         setSelectedSquare(square);
         setLegalMoves(gameEngine.getLegalMoves(square));
       } else {
@@ -59,8 +61,8 @@ export const Board: React.FC<BoardProps> = ({
         setLegalMoves([]);
       }
     } else {
-      if (piece && piece.color === gameState.turn && 
-          (!playerColor || piece.color === playerColor)) {
+      if (piece && piece.color === gameState.turn &&
+        (!playerColor || piece.color === playerColor)) {
         setSelectedSquare(square);
         setLegalMoves(gameEngine.getLegalMoves(square));
       }
@@ -96,13 +98,7 @@ export const Board: React.FC<BoardProps> = ({
     );
   };
 
-  const getPieceSymbol = (type: string, color: 'w' | 'b'): string => {
-    const pieces: Record<string, string> = {
-      'w_q': '♕', 'w_r': '♖', 'w_b': '♗', 'w_n': '♘',
-      'b_q': '♛', 'b_r': '♜', 'b_b': '♝', 'b_n': '♞',
-    };
-    return pieces[`${color}_${type}`] || '';
-  };
+  const promotionPieces: PieceType[] = ['q', 'r', 'b', 'n'];
 
   return (
     <>
@@ -122,13 +118,17 @@ export const Board: React.FC<BoardProps> = ({
           <div className={styles.promotionDialog}>
             <h3>Choose promotion</h3>
             <div className={styles.promotionPieces}>
-              {['q', 'r', 'b', 'n'].map(piece => (
+              {promotionPieces.map(piece => (
                 <button
                   key={piece}
                   className={styles.promotionButton}
                   onClick={() => handlePromotion(piece)}
                 >
-                  {getPieceSymbol(piece, gameEngine.getState().turn)}
+                  <ChessPiece
+                    type={piece}
+                    color={gameEngine.getState().turn}
+                    size={48}
+                  />
                 </button>
               ))}
             </div>

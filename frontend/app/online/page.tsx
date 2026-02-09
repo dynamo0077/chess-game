@@ -7,6 +7,7 @@ import { MoveList } from '@/components/MoveList';
 import { GameControls } from '@/components/GameControls';
 import { Toast } from '@/components/Toast';
 import { TakebackDialog } from '@/components/TakebackDialog';
+import { SkinSelector } from '@/components/SkinSelector';
 import { ChessEngine } from '@/lib/chess-engine';
 import { socketClient } from '@/lib/socket-client';
 import { ToastMessage, GameState } from '@/lib/types';
@@ -23,6 +24,7 @@ export default function OnlinePage() {
     const [isConnected, setIsConnected] = useState(false);
     const [inRoom, setInRoom] = useState(false);
     const [takebackRequest, setTakebackRequest] = useState<{ requesterColor: 'w' | 'b' } | null>(null);
+    const [showSkinSelector, setShowSkinSelector] = useState(false);
 
     const addToast = (message: string, type: ToastMessage['type'] = 'info') => {
         const toast: ToastMessage = {
@@ -258,6 +260,11 @@ export default function OnlinePage() {
     return (
         <div className={styles.container}>
             <Toast toasts={toasts} onDismiss={removeToast} />
+            <SkinSelector
+                isOpen={showSkinSelector}
+                onClose={() => setShowSkinSelector(false)}
+                playerColor={playerColor || undefined}
+            />
             {takebackRequest && (
                 <TakebackDialog
                     requesterColor={takebackRequest.requesterColor}
@@ -271,15 +278,24 @@ export default function OnlinePage() {
                     ← Leave Room
                 </button>
                 <h1 className={styles.title}>Room: {roomId}</h1>
-                <div className={styles.playerInfo}>
-                    You are: <span className={styles.colorBadge}>
-                        {playerColor === 'w' ? 'White ♔' : 'Black ♚'}
-                    </span>
-                    {!isGameOver && (
-                        <span className={isMyTurn ? styles.yourTurn : styles.opponentTurn}>
-                            {isMyTurn ? '(Your turn)' : '(Opponent\'s turn)'}
+                <div className={styles.headerActions}>
+                    <button
+                        onClick={() => setShowSkinSelector(true)}
+                        className={styles.skinButton}
+                        title="Change piece skins"
+                    >
+                        🎨 Skins
+                    </button>
+                    <div className={styles.playerInfo}>
+                        You are: <span className={styles.colorBadge}>
+                            {playerColor === 'w' ? 'White ♔' : 'Black ♚'}
                         </span>
-                    )}
+                        {!isGameOver && (
+                            <span className={isMyTurn ? styles.yourTurn : styles.opponentTurn}>
+                                {isMyTurn ? '(Your turn)' : '(Opponent\'s turn)'}
+                            </span>
+                        )}
+                    </div>
                 </div>
             </header>
 

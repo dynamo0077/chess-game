@@ -6,6 +6,7 @@ import { Board } from '@/components/Board';
 import { MoveList } from '@/components/MoveList';
 import { GameControls } from '@/components/GameControls';
 import { Toast } from '@/components/Toast';
+import { SkinSelector } from '@/components/SkinSelector';
 import { ChessEngine } from '@/lib/chess-engine';
 import { ToastMessage } from '@/lib/types';
 import styles from './offline.module.css';
@@ -15,6 +16,7 @@ export default function OfflinePage() {
   const [gameEngine] = useState(() => new ChessEngine());
   const [gameState, setGameState] = useState(gameEngine.getState());
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [showSkinSelector, setShowSkinSelector] = useState(false);
 
   const addToast = (message: string, type: ToastMessage['type'] = 'info') => {
     const toast: ToastMessage = {
@@ -31,7 +33,7 @@ export default function OfflinePage() {
 
   const handleMove = (from: string, to: string, promotion?: string) => {
     const newState = gameEngine.makeMove(from, to, promotion);
-    
+
     if (newState) {
       setGameState(newState);
 
@@ -73,20 +75,30 @@ export default function OfflinePage() {
   return (
     <div className={styles.container}>
       <Toast toasts={toasts} onDismiss={removeToast} />
+      <SkinSelector isOpen={showSkinSelector} onClose={() => setShowSkinSelector(false)} />
 
       <header className={styles.header}>
         <button onClick={() => router.push('/')} className={styles.backButton}>
           ← Back to Home
         </button>
         <h1 className={styles.title}>Offline Mode</h1>
-        <div className={styles.turn}>
-          {!isGameOver && (
-            <>
-              Turn: <span className={styles.turnIndicator}>
-                {gameState.turn === 'w' ? 'White ♔' : 'Black ♚'}
-              </span>
-            </>
-          )}
+        <div className={styles.headerActions}>
+          <button
+            onClick={() => setShowSkinSelector(true)}
+            className={styles.skinButton}
+            title="Change piece skins"
+          >
+            🎨 Skins
+          </button>
+          <div className={styles.turn}>
+            {!isGameOver && (
+              <>
+                Turn: <span className={styles.turnIndicator}>
+                  {gameState.turn === 'w' ? 'White ♔' : 'Black ♚'}
+                </span>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
@@ -101,7 +113,7 @@ export default function OfflinePage() {
 
         <aside className={styles.sidebar}>
           <MoveList moves={gameState.moveHistory} />
-          
+
           <GameControls
             onNewGame={handleNewGame}
             onUndo={handleUndo}
