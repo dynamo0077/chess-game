@@ -71,8 +71,18 @@ export function SkinProvider({ children }: { children: ReactNode }) {
 
 export function useSkin() {
     const context = useContext(SkinContext);
+
+    // During SSR/build time, return default values instead of throwing
     if (context === undefined) {
-        throw new Error('useSkin must be used within a SkinProvider');
+        return {
+            whiteSkin: DEFAULT_SKIN,
+            blackSkin: DEFAULT_SKIN,
+            setWhiteSkin: () => { },
+            setBlackSkin: () => { },
+            availableSkins: SKIN_LIST,
+            getSkinById: (id: SkinId) => SKINS[id],
+        };
     }
+
     return context;
 }
