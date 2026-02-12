@@ -301,3 +301,158 @@
     font-size: 1.1rem;
   }
 }
+
+/* Connection Status Indicators */
+.statusConnecting {
+  color: #f59e0b;
+  font-weight: 600;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.statusWaking {
+  color: #f59e0b;
+  font-weight: 600;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Waking Overlay */
+.wakingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 14, 39, 0.85);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.wakingVisible {
+  opacity: 1;
+}
+
+.wakingCard {
+  background: rgba(37, 43, 72, 0.9);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 24px;
+  padding: 48px 56px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 80px rgba(99, 102, 241, 0.1);
+  max-width: 420px;
+  width: 90%;
+}
+
+.planetContainer {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 32px;
+}
+
+.planet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 36px;
+  height: 36px;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.6), 0 0 40px rgba(99, 102, 241, 0.3);
+}
+
+.planetRing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 2px solid rgba(99, 102, 241, 0.4);
+  transform: translate(-50%, -50%);
+  animation: ringPulse 2.5s ease-in-out infinite;
+}
+
+.ring1 {
+  width: 56px;
+  height: 56px;
+  animation-delay: 0s;
+}
+
+.ring2 {
+  width: 76px;
+  height: 76px;
+  animation-delay: 0.4s;
+}
+
+.ring3 {
+  width: 96px;
+  height: 96px;
+  animation-delay: 0.8s;
+}
+
+.wakingTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e4e4e7;
+  margin: 0 0 8px;
+}
+
+.wakingText {
+  font-size: 1.1rem;
+  color: #a1a1aa;
+  margin: 0 0 16px;
+}
+
+.wakingSubtext {
+  font-size: 0.875rem;
+  color: #71717a;
+  margin: 0;
+  line-height: 1.5;
+}
+
+@keyframes ringPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 1;
+    border-color: rgba(99, 102, 241, 0.6);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.5;
+    border-color: rgba(168, 85, 247, 0.3);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 1;
+    border-color: rgba(99, 102, 241, 0.6);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

@@ -11,7 +11,8 @@ class SocketClient {
         transports: ['websocket'],
         reconnection: true,
         reconnectionDelay: 1000,
-        reconnectionAttempts: 5
+        reconnectionAttempts: 30,
+        timeout: 5000
       });
     }
     return this.socket;

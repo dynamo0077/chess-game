@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Board } from '@/components/Board';
 import { MoveList } from '@/components/MoveList';
@@ -13,6 +13,8 @@ import { socketClient } from '@/lib/socket-client';
 import { ToastMessage, GameState } from '@/lib/types';
 import styles from './online.module.css';
 
+type ConnectionStatus = 'connecting' | 'waking_up' | 'connected' | 'disconnected';
+
 export default function OnlinePage() {
     const router = useRouter();
     const [gameEngine] = useState(() => new ChessEngine());
@@ -21,10 +23,13 @@ export default function OnlinePage() {
     const [roomId, setRoomId] = useState<string>('');
     const [joinRoomId, setJoinRoomId] = useState<string>('');
     const [playerColor, setPlayerColor] = useState<'w' | 'b' | null>(null);
-    const [isConnected, setIsConnected] = useState(false);
+    const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('connecting');
     const [inRoom, setInRoom] = useState(false);
     const [takebackRequest, setTakebackRequest] = useState<{ requesterColor: 'w' | 'b' } | null>(null);
     const [showSkinSelector, setShowSkinSelector] = useState(false);
+    const wakingTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+    const isConnected = connectionStatus === 'connected';
 
     const addToast = (message: string, type: ToastMessage['type'] = 'info') => {
         const toast: ToastMessage = {
@@ -42,14 +47,39 @@ export default function OnlinePage() {
     useEffect(() => {
         const socket = socketClient.connect();
 
+        // Start a 3-second timer — if not connected by then, show waking_up state
+        wakingTimerRef.current = setTimeout(() => {
+            setConnectionStatus(prev => {
+                if (prev === 'connecting') return 'waking_up';
+                return prev;
+            });
+        }, 3000);
+
         socket.on('connect', () => {
-            setIsConnected(true);
+            if (wakingTimerRef.current) {
+                clearTimeout(wakingTimerRef.current);
+                wakingTimerRef.current = null;
+            }
+            setConnectionStatus('connected');
             addToast('Connected to server', 'success');
         });
 
         socket.on('disconnect', () => {
-            setIsConnected(false);
-            addToast('Disconnected from server', 'error');
+            setConnectionStatus(prev => {
+                // Only show "disconnected" if we were previously connected
+                if (prev === 'connected') {
+                    addToast('Disconnected from server', 'error');
+                    return 'disconnected';
+                }
+                return prev;
+            });
+        });
+
+        socket.on('connect_error', () => {
+            setConnectionStatus(prev => {
+                if (prev === 'connecting') return 'waking_up';
+                return prev;
+            });
         });
 
         socket.on('ROOM_CREATED', ({ roomId, color, gameState }) => {
@@ -138,6 +168,9 @@ export default function OnlinePage() {
         });
 
         return () => {
+            if (wakingTimerRef.current) {
+                clearTimeout(wakingTimerRef.current);
+            }
             socketClient.disconnect();
         };
     }, [gameEngine]);
@@ -207,10 +240,49 @@ export default function OnlinePage() {
     const isGameOver = ['checkmate', 'stalemate', 'draw', 'resigned'].includes(gameState.status);
     const isMyTurn = playerColor === gameState.turn;
 
+    // Waking Up Overlay
+    const showWakingOverlay = connectionStatus === 'connecting' || connectionStatus === 'waking_up';
+
+    // Status indicator text
+    const statusDisplay = () => {
+        switch (connectionStatus) {
+            case 'connecting':
+                return <span className={styles.statusConnecting}>● Connecting...</span>;
+            case 'waking_up':
+                return <span className={styles.statusWaking}>● Waking up...</span>;
+            case 'connected':
+                return <span className={styles.connected}>● Connected</span>;
+            case 'disconnected':
+                return <span className={styles.disconnected}>● Disconnected</span>;
+        }
+    };
+
     if (!inRoom) {
         return (
             <div className={styles.container}>
                 <Toast toasts={toasts} onDismiss={removeToast} />
+
+                {showWakingOverlay && (
+                    <div className={`${styles.wakingOverlay} ${connectionStatus === 'waking_up' ? styles.wakingVisible : ''}`}>
+                        <div className={styles.wakingCard}>
+                            <div className={styles.planetContainer}>
+                                <div className={styles.planet}></div>
+                                <div className={`${styles.planetRing} ${styles.ring1}`}></div>
+                                <div className={`${styles.planetRing} ${styles.ring2}`}></div>
+                                <div className={`${styles.planetRing} ${styles.ring3}`}></div>
+                            </div>
+                            <h2 className={styles.wakingTitle}>
+                                {connectionStatus === 'connecting' ? 'Connecting...' : 'Server is waking up...'}
+                            </h2>
+                            <p className={styles.wakingText}>Please wait</p>
+                            {connectionStatus === 'waking_up' && (
+                                <p className={styles.wakingSubtext}>
+                                    This may take up to 60 seconds on the free tier.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 <header className={styles.header}>
                     <button onClick={() => router.push('/')} className={styles.backButton}>
@@ -218,11 +290,7 @@ export default function OnlinePage() {
                     </button>
                     <h1 className={styles.title}>Online Mode</h1>
                     <div className={styles.status}>
-                        {isConnected ? (
-                            <span className={styles.connected}>● Connected</span>
-                        ) : (
-                            <span className={styles.disconnected}>● Disconnected</span>
-                        )}
+                        {statusDisplay()}
                     </div>
                 </header>
 

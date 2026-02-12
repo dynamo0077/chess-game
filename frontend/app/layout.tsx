@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { SkinProvider } from '@/lib/useSkin';
+import { ThemeProvider } from '@/lib/useTheme';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SkinProvider>{children}</SkinProvider>
+        <SkinProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </SkinProvider>
       </body>
     </html>
   );

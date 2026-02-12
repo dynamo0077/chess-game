@@ -9,11 +9,11 @@
 }
 
 .light {
-  background-color: #f0d9b5;
+  background-color: var(--board-light, #f0d9b5);
 }
 
 .dark {
-  background-color: #b58863;
+  background-color: var(--board-dark, #b58863);
 }
 
 .selected {

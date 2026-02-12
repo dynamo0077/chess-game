@@ -5,6 +5,7 @@ import { Square as SquareComponent } from './Square';
 import { ChessPiece } from './pieces/ChessPiece';
 import { ChessEngine } from '@/lib/chess-engine';
 import { PieceType } from '@/lib/skins';
+import { useTheme } from '@/lib/useTheme';
 import styles from './Board.module.css';
 
 interface BoardProps {
@@ -22,6 +23,7 @@ export const Board: React.FC<BoardProps> = ({
   playerColor,
   orientation = 'white'
 }) => {
+  const { theme } = useTheme();
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
   const [promotionPending, setPromotionPending] = useState<{ from: string; to: string } | null>(null);
@@ -102,7 +104,13 @@ export const Board: React.FC<BoardProps> = ({
 
   return (
     <>
-      <div className={styles.board}>
+      <div
+        className={styles.board}
+        style={{
+          '--board-light': theme.colors.light,
+          '--board-dark': theme.colors.dark,
+        } as React.CSSProperties}
+      >
         {displayRanks.map((rank, rankIndex) => (
           <React.Fragment key={rank}>
             {displayFiles.map((file, fileIndex) => {

@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import { ThemeSelector } from './ThemeSelector';
 import styles from './GameControls.module.css';
 
 interface GameControlsProps {
@@ -20,9 +21,11 @@ export const GameControls: React.FC<GameControlsProps> = ({
   rematchDisabled = false,
   showRematch = false
 }) => {
+  const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState(false);
+
   return (
     <div className={styles.controls}>
-      <button 
+      <button
         className={`${styles.button} ${styles.primary}`}
         onClick={onNewGame}
       >
@@ -33,7 +36,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
         New Game
       </button>
 
-      <button 
+      <button
         className={`${styles.button} ${styles.secondary}`}
         onClick={onUndo}
         disabled={undoDisabled}
@@ -46,7 +49,7 @@ export const GameControls: React.FC<GameControlsProps> = ({
       </button>
 
       {showRematch && (
-        <button 
+        <button
           className={`${styles.button} ${styles.success}`}
           onClick={onRematch}
           disabled={rematchDisabled}
@@ -59,6 +62,25 @@ export const GameControls: React.FC<GameControlsProps> = ({
           Rematch
         </button>
       )}
+
+      <button
+        className={`${styles.button} ${styles.secondary}`}
+        onClick={() => setIsThemeSelectorOpen(true)}
+        title="Board Theme"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        Theme
+      </button>
+
+      <ThemeSelector
+        isOpen={isThemeSelectorOpen}
+        onClose={() => setIsThemeSelectorOpen(false)}
+      />
     </div>
   );
 };
